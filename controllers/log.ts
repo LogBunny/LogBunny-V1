@@ -80,11 +80,62 @@ class Logs {
     };
     res.writeHead(200, headers);
     const generate = (message: any) => {
-      res.write(`data: ${message}\n\n`);
+      try {
+        const logData = JSON.parse(message);
+        const filter: Record<string, any> = {};
+        if (req.query.level) {
+          filter.level = req.query.level;
+        }
+        if (req.query.msg_regex) {
+          filter.message = {
+            $regex: new RegExp(req.query.msg_regex.toString(), "i"),
+          };
+        }
+        if (req.query.resource_id) {
+          filter.resourceId = req.query.resource_id;
+        }
+        if (req.query.trace_id) {
+          filter.traceId = req.query.trace_id;
+        }
+        if (req.query.span_id) {
+          filter.spanId = req.query.span_id;
+        }
+        if (req.query.commit) {
+          filter.commit = req.query.commit;
+        }
+        if (req.query.parent_resource_id) {
+          filter["metadata.parentResourceId"] = req.query.parent_resource_id;
+        }
+        if (req.query.timestamp) {
+          filter.timestamp = new Date(req.query.timestamp.toString());
+        }
+
+        if (req.query.from_timestamp && req.query.to_timestamp) {
+          filter.timestamp = {
+            $gte: new Date(req.query.from_timestamp.toString()),
+            $lte: new Date(req.query.to_timestamp.toString()),
+          };
+        } else if (req.query.from_timestamp) {
+          filter.timestamp = {
+            $gte: new Date(req.query.from_timestamp.toString()),
+          };
+        } else if (req.query.to_timestamp) {
+          filter.timestamp = {
+            $lte: new Date(req.query.to_timestamp.toString()),
+          };
+        }
+        const matchesFilter = Object.entries(filter).every(([key, value]) => {
+          return logData[key] === value;
+        });
+        if (matchesFilter) {
+          res.write(`data: ${JSON.stringify(logData)}\n\n`);
+        }
+      } catch (error) {
+        console.error("An error occured", error);
+        res.write(`error: Internal server error ${error}\n\n`);
+      }
     };
-    PubSub.subscribe("log", (msg) => {
-      res.write(`data: ${msg}\n\n`);
-    });
+    PubSub.subscribe("log", generate);
     req.on("close", () => {
       PubSub.removeListener("message", generate);
       res.end();
