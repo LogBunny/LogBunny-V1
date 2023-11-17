@@ -26,6 +26,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use(express.json());
 app.post("/ingest", Logs.CreateNewLog);
 app.get("/stream", Logs.StreamLogs);
+app.get("/logs", Logs.GetLogs);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
