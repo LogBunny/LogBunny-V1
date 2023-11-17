@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import IngestLogs from "./controllers/ingest";
+import Logs from "./controllers/ingest";
 import DBInit from "./utils/db_utils";
 import BullMQInit, { SetUpWorker } from "./utils/bullmq_utils";
 import RedisInit from "./utils/redis_utils";
@@ -24,7 +24,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use(express.json());
-app.post("/ingest", IngestLogs.CreateNewLog);
+app.post("/ingest", Logs.CreateNewLog);
+app.get("/stream", Logs.StreamLogs);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

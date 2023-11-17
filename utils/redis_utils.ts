@@ -2,7 +2,8 @@ import { RedisClientType } from "@redis/client";
 import { createClient } from "redis";
 
 export let RedisClient: RedisClientType;
-export default function RedisInit() {
+export let PubSub: RedisClientType;
+export default async function RedisInit() {
   RedisClient = createClient({
     password: process.env.REDIS_PASS,
     socket: {
@@ -10,4 +11,7 @@ export default function RedisInit() {
       port: 19090,
     },
   });
+  PubSub = RedisClient.duplicate();
+  await PubSub.connect();
+  await RedisClient.connect();
 }
