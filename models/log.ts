@@ -1,4 +1,4 @@
-import { Mongoose, Schema } from "mongoose";
+import { Schema } from "mongoose";
 
 const LogSchema: Schema = new Schema({
   level: String,
