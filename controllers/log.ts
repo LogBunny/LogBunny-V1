@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import LogData from "../validator/log";
+import LogData from "../validators/log";
 import { LogsQueue } from "../utils/bullmq_utils";
 import { PubSub, RedisClient } from "../utils/redis_utils";
 import { Log } from "../utils/db_utils";

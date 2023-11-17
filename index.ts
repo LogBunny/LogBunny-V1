@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import Logs from "./controllers/ingest";
+import Logs from "./controllers/log";
 import DBInit from "./utils/db_utils";
 import BullMQInit, { SetUpWorker } from "./utils/bullmq_utils";
 import RedisInit from "./utils/redis_utils";
