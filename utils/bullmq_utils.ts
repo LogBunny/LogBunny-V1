@@ -6,7 +6,7 @@ export default function BullMQInit() {
   LogsQueue = new Queue("logQueue", {
     connection: {
       host: process.env.REDIS_HOST,
-      port: 19090,
+      port: parseInt(process.env.REDIS_PORT!),
       password: process.env.REDIS_PASS,
     },
   });
@@ -22,7 +22,7 @@ export function SetUpWorker() {
     {
       connection: {
         host: process.env.REDIS_HOST,
-        port: 19090,
+        port: parseInt(process.env.REDIS_PORT!),
         password: process.env.REDIS_PASS,
       },
     }
