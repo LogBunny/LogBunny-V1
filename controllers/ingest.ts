@@ -49,10 +49,10 @@ class Logs {
         filter.timestamp = new Date(req.query.timestamp.toString());
       }
 
-      if (req.query.fromTimestamp && req.query.toTimestamp) {
+      if (req.query.from_timestamp && req.query.to_timestamp) {
         filter.timestamp = {
-          $gte: new Date(req.query.fromTimestamp.toString()),
-          $lte: new Date(req.query.toTimestamp.toString()),
+          $gte: new Date(req.query.from_timestamp.toString()),
+          $lte: new Date(req.query.to_timestamp.toString()),
         };
       } else if (req.query.fromTimestamp) {
         filter.timestamp = {
