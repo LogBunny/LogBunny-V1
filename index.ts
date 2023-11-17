@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(express.json());
 app.post("/ingest", Logs.CreateNewLog);
-app.get("/stream", Logs.StreamLogs);
+app.get("/stream", Logs.StreamLogs); //Keep Alive connection!
 app.get("/logs", Logs.GetLogs);
 
 app.listen(port, () => {

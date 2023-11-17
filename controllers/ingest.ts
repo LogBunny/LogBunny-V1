@@ -54,12 +54,14 @@ class Logs {
           $gte: new Date(req.query.from_timestamp.toString()),
           $lte: new Date(req.query.to_timestamp.toString()),
         };
-      } else if (req.query.fromTimestamp) {
+      } else if (req.query.from_timestamp) {
         filter.timestamp = {
-          $gte: new Date(req.query.fromTimestamp.toString()),
+          $gte: new Date(req.query.from_timestamp.toString()),
         };
-      } else if (req.query.toTimestamp) {
-        filter.timestamp = { $lte: new Date(req.query.toTimestamp.toString()) };
+      } else if (req.query.to_timestamp) {
+        filter.timestamp = {
+          $lte: new Date(req.query.to_timestamp.toString()),
+        };
       }
 
       const logs = await Log.find(filter);
