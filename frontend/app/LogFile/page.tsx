@@ -36,7 +36,7 @@ export default function LogFile() {
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-    const url = `http://localhost:8080/logs?${queryString}`;
+    const url = `https://sabertooth.fly.dev/logs?${queryString}`;
 
     async function fetchData() {
       const res = await fetch(url);
@@ -166,9 +166,9 @@ export default function LogFile() {
       </div>
       <div className="bg-blue-950 rounded-lg w-3/4 h-3/4 overflow-y-scroll p-4 text-green-400">
         {logs.length > 0
-          ? logs.map((log) => {
+          ? logs.map((log, idx) => {
               return (
-                <div>
+                <div key={idx}>
                   <span className="text-slate-500">{log.timestamp}</span> [
                   <span className={log.color}>{log.level}</span>] {log.message}
                 </div>

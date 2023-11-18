@@ -33,7 +33,7 @@ export default function Home() {
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-    const url = `http://localhost:8080/stream?${queryString}`;
+    const url = `https://sabertooth.fly.dev/stream?${queryString}`;
     const logSource = new EventSource(url);
     logSource.onmessage = function (event) {
       const logData = JSON.parse(event.data);
@@ -142,9 +142,9 @@ export default function Home() {
       </div>
       <div className="bg-blue-950 rounded-lg w-3/4 h-3/4 overflow-y-scroll p-4 text-green-400">
         {logs.length > 0
-          ? logs.map((log) => {
+          ? logs.map((log, idx) => {
               return (
-                <div>
+                <div key={idx}>
                   <span className="text-slate-500">{log.timestamp}</span> [
                   <span className={log.color}>{log.level}</span>] {log.message}
                 </div>
