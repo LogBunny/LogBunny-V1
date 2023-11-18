@@ -51,7 +51,7 @@ export default function Home() {
     return () => {
       logSource.close();
     };
-  }, [level, msg, resourceId, traceId, spanId, commit, parentResourceId]);
+  }, [logs, level, msg, resourceId, traceId, spanId, commit, parentResourceId]);
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen">
