@@ -106,24 +106,7 @@ class Logs {
         if (req.query.parent_resource_id) {
           filter["metadata.parentResourceId"] = req.query.parent_resource_id;
         }
-        if (req.query.timestamp) {
-          filter.timestamp = new Date(req.query.timestamp.toString());
-        }
 
-        if (req.query.from_timestamp && req.query.to_timestamp) {
-          filter.timestamp = {
-            $gte: new Date(req.query.from_timestamp.toString()),
-            $lte: new Date(req.query.to_timestamp.toString()),
-          };
-        } else if (req.query.from_timestamp) {
-          filter.timestamp = {
-            $gte: new Date(req.query.from_timestamp.toString()),
-          };
-        } else if (req.query.to_timestamp) {
-          filter.timestamp = {
-            $lte: new Date(req.query.to_timestamp.toString()),
-          };
-        }
         const matchesFilter = Object.entries(filter).every(([key, value]) => {
           if (key === "message" && value.$regex) {
             return value.$regex.test(logData[key]);
