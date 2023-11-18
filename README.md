@@ -151,8 +151,11 @@ Example url: https://sabertooth.fly.dev/logs?from=2023-10-16T12:34&to=2025-12-16
 ## Roadmap
 
 - [x] Searching on entire logfile
-- [x] Realtime viewing of logs
-- [x] Realtime searching of logs
+- [x] Implement search within specific date ranges.
+- [x] Utilize regular expressions for search.
+- [x] Allow combining multiple filters.
+- [x] Provide real-time log ingestion and searching capabilities.
+- [ ] Implement role-based access to the query interface.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
