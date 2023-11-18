@@ -6,6 +6,7 @@ import BullMQInit, { SetUpWorker } from "./utils/bullmq_utils";
 import RedisInit from "./utils/redis_utils";
 import cron from "node-cron";
 import morgan from "morgan";
+import cors from "cors";
 dotenv.config();
 
 DBInit();
@@ -19,6 +20,7 @@ cron.schedule("*/5 * * * *", async () => {
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(morgan("dev"));
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");

@@ -125,7 +125,11 @@ class Logs {
           };
         }
         const matchesFilter = Object.entries(filter).every(([key, value]) => {
-          return logData[key] === value;
+          if (key === "message" && value.$regex) {
+            return value.$regex.test(logData[key]);
+          } else {
+            return logData[key] === value;
+          }
         });
         if (matchesFilter) {
           res.write(`data: ${JSON.stringify(logData)}\n\n`);

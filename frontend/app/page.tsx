@@ -1,33 +1,63 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
+interface LogType {
+  level: string;
+  color: string;
+  timestamp: string;
+  message: string;
+}
+
 export default function Home() {
   const [level, setLevel] = useState("");
   const [msg, setMsg] = useState("");
   const [resourceId, setResourceId] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
   const [traceId, setTraceId] = useState("");
   const [spanId, setSpanId] = useState("");
   const [commit, setCommit] = useState("");
   const [parentResourceId, setParentResourceId] = useState("");
-  const logContainerRef: any = useRef({});
+  const [logs, setLogs] = useState<LogType[]>([]);
   useEffect(() => {
-    const logContainer = logContainerRef.current;
-    if (!logContainer) {
-      return;
-    }
-    const logSource = new EventSource("http://localhost:8080/stream");
+    console.log("meow", level, spanId, traceId);
+    const queryParams = {
+      level: level,
+      msg_regex: msg,
+      resource_id: resourceId,
+      trace_id: traceId,
+      span_id: spanId,
+      commit: commit,
+      parent_resource_id: parentResourceId,
+    };
+    const queryString = Object.entries(queryParams)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    const url = `http://localhost:8080/stream?${queryString}`;
+    const logSource = new EventSource(url);
     logSource.onmessage = function (event) {
       const logData = JSON.parse(event.data);
-      displayLog(logData);
+      switch (logData.level) {
+        case "info":
+          logData.color = "text-cyan-400";
+          break;
+        case "debug":
+          logData.color = "text-yellow-400";
+          break;
+        case "error":
+          logData.color = "text-red-400";
+          break;
+      }
+      console.log(logData);
+      const newlogs = [...logs, logData];
+      displayLog(newlogs);
     };
     function displayLog(logData: any) {
-      const logElement = document.createElement("div");
-      logElement.textContent = JSON.stringify(logData);
-      logContainerRef.current!.appendChild(logElement);
+      setLogs(logData);
     }
-  }, [logContainerRef]);
+    return () => {
+      logSource.close();
+    };
+  }, [logs, level, msg, resourceId, traceId, spanId, commit, parentResourceId]);
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen">
@@ -40,8 +70,10 @@ export default function Home() {
             name="log_level"
             id=""
             className="bg-white"
+            defaultValue={""}
             onChange={(e) => setLevel(e.target.value)}
           >
+            <option value="">All</option>
             <option value="info">Info</option>
             <option value="debug">Debug</option>
             <option value="error">Error</option>
@@ -63,22 +95,6 @@ export default function Home() {
             className="w-24"
             placeholder="resourceId"
             onChange={(e) => setResourceId(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col p-2">
-          From
-          <input
-            type="datetime-local"
-            className="w-48"
-            onChange={(e) => setFrom(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col p-2">
-          To
-          <input
-            type="datetime-local"
-            className="w-48"
-            onChange={(e) => setTo(e.target.value)}
           />
         </div>
         <div className="flex flex-col p-2">
@@ -117,15 +133,18 @@ export default function Home() {
             onChange={(e) => setParentResourceId(e.target.value)}
           />
         </div>
-        <button className="bg-slate-100 p-4 rounded-lg hover:bg-slate-300">
-          Submit
-        </button>
       </div>
-      <div
-        ref={logContainerRef}
-        className="bg-blue-950 rounded-lg w-3/4 h-3/4 p-4 text-green-400"
-      >
-        Fetching logs...
+      <div className="bg-blue-950 rounded-lg w-3/4 h-3/4 p-4 text-green-400">
+        {logs.length > 0
+          ? logs.map((log) => {
+              return (
+                <div>
+                  <span className="text-slate-500">{log.timestamp}</span> [
+                  <span className={log.color}>{log.level}</span>] {log.message}
+                </div>
+              );
+            })
+          : "Fetching logs..."}
       </div>
     </div>
   );
