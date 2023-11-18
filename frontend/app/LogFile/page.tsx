@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface LogType {
@@ -9,9 +8,11 @@ interface LogType {
   message: string;
 }
 
-export default function Home() {
+export default function LogFile() {
   const [level, setLevel] = useState("");
   const [msg, setMsg] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [resourceId, setResourceId] = useState("");
   const [traceId, setTraceId] = useState("");
   const [spanId, setSpanId] = useState("");
@@ -28,46 +29,51 @@ export default function Home() {
       span_id: spanId,
       commit: commit,
       parent_resource_id: parentResourceId,
+      from_timestamp: from,
+      to_timestamp: to,
     };
     const queryString = Object.entries(queryParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-    const url = `http://localhost:8080/stream?${queryString}`;
-    const logSource = new EventSource(url);
-    logSource.onmessage = function (event) {
-      const logData = JSON.parse(event.data);
-      switch (logData.level) {
-        case "info":
-          logData.color = "text-cyan-400";
-          break;
-        case "debug":
-          logData.color = "text-yellow-400";
-          break;
-        case "error":
-          logData.color = "text-red-400";
-          break;
-      }
-      console.log(logData);
-      const newlogs = [...logs, logData];
-      displayLog(newlogs);
-    };
-    function displayLog(logData: any) {
+    const url = `http://localhost:8080/logs?${queryString}`;
+
+    async function fetchData() {
+      const res = await fetch(url);
+      const data = await res.json();
+      const logData = data.data;
+      logData.map((log: any) => {
+        switch (log.level) {
+          case "info":
+            log.color = "text-cyan-400";
+            break;
+          case "debug":
+            log.color = "text-yellow-400";
+            break;
+          case "error":
+            log.color = "text-red-400";
+            break;
+        }
+      });
+
       setLogs(logData);
     }
-    return () => {
-      logSource.close();
-    };
-  }, [level, msg, resourceId, traceId, spanId, commit, parentResourceId]);
+    fetchData();
+  }, [
+    level,
+    msg,
+    resourceId,
+    traceId,
+    spanId,
+    commit,
+    parentResourceId,
+    to,
+    from,
+  ]);
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen">
-      <div className="w-screen text-end p-2 items-end">
-        <span className="underline">
-          <Link href="/LogFile">Logs</Link>
-        </span>
-      </div>
-      <div className="text-2xl font-bold">Realtime data 🚀</div>
+      <div className="text-2xl font-bold">Logs 🔥</div>
       <div className="h-[15%] flex items-end">
         <div className="p-2">Filters:</div>
         <div className="flex flex-col p-2">
@@ -92,6 +98,24 @@ export default function Home() {
             className="w-24"
             placeholder="regex"
             onChange={(e) => setMsg(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col p-2">
+          From
+          <input
+            type="date"
+            className="w-24"
+            placeholder="regex"
+            onChange={(e) => setFrom(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col p-2">
+          To
+          <input
+            type="date"
+            className="w-24"
+            placeholder="regex"
+            onChange={(e) => setTo(e.target.value)}
           />
         </div>
         <div className="flex flex-col p-2">
