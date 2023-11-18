@@ -1,13 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-interface LogType {
-  level: string;
-  color: string;
-  timestamp: string;
-  message: string;
-}
+import LogType from "./schema/logSchema";
 
 export default function Home() {
   const [level, setLevel] = useState("");
@@ -19,7 +13,6 @@ export default function Home() {
   const [parentResourceId, setParentResourceId] = useState("");
   const [logs, setLogs] = useState<LogType[]>([]);
   useEffect(() => {
-    console.log("meow", level, spanId, traceId);
     const queryParams = {
       level: level,
       msg_regex: msg,
@@ -146,7 +139,11 @@ export default function Home() {
               return (
                 <div key={idx}>
                   <span className="text-slate-500">{log.timestamp}</span> [
-                  <span className={log.color}>{log.level}</span>] {log.message}
+                  <span className={log.color}>{log.level}</span>] [
+                  <span className="text-white">commit:{log.commit}</span>] [
+                  <span className="text-red-500">traceId:{log.traceId}</span>] [
+                  <span className="text-cyan-500">spanId:{log.spanId}</span>]
+                  {log.message}
                 </div>
               );
             })

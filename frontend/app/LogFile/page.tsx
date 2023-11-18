@@ -1,12 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-
-interface LogType {
-  level: string;
-  color: string;
-  timestamp: string;
-  message: string;
-}
+import LogType from "../schema/logSchema";
+import Link from "next/link";
 
 export default function LogFile() {
   const [level, setLevel] = useState("");
@@ -73,6 +68,11 @@ export default function LogFile() {
 
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen">
+      <div className="w-screen text-end p-2 items-end">
+        <span className="underline">
+          <Link href="/">Realtime</Link>
+        </span>
+      </div>
       <div className="text-2xl font-bold">Logs 🔥</div>
       <div className="h-[15%] flex items-end">
         <div className="p-2">Filters:</div>
@@ -170,7 +170,11 @@ export default function LogFile() {
               return (
                 <div key={idx}>
                   <span className="text-slate-500">{log.timestamp}</span> [
-                  <span className={log.color}>{log.level}</span>] {log.message}
+                  <span className={log.color}>{log.level}</span>] [
+                  <span className="text-white">commit:{log.commit}</span>] [
+                  <span className="text-red-500">traceId:{log.traceId}</span>] [
+                  <span className="text-cyan-500">spanId:{log.spanId}</span>]
+                  {log.message}
                 </div>
               );
             })
