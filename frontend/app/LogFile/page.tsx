@@ -27,6 +27,7 @@ export default function LogFile() {
       from_timestamp: from,
       to_timestamp: to,
     };
+    //generating query params
     const queryString = Object.entries(queryParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)

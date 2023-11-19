@@ -32,7 +32,7 @@ export default function DBInit() {
 }
 
 export const Log = mongoose.model<LogDocument>("Log", LogSchema);
-
+//indices for faster lookup
 Log.collection.createIndex("level");
 Log.collection.createIndex("resourceId");
 Log.collection.createIndex("traceId");

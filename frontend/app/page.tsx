@@ -22,6 +22,7 @@ export default function Home() {
       commit: commit,
       parent_resource_id: parentResourceId,
     };
+    //generating query params
     const queryString = Object.entries(queryParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)

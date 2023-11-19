@@ -21,6 +21,7 @@ class Logs {
 
   public static async GetLogs(req: Request, res: Response) {
     try {
+      //filters
       const filter: Record<string, any> = {};
       if (req.query.level) {
         filter.level = req.query.level;
@@ -82,6 +83,7 @@ class Logs {
     const generate = (message: any) => {
       try {
         const logData = JSON.parse(message);
+        //filters
         const filter: Record<string, any> = {};
         if (req.query.level) {
           filter.level = req.query.level;

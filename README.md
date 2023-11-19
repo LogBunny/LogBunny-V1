@@ -156,6 +156,7 @@ Example url: https://sabertooth.fly.dev/logs?from=2023-10-16T12:34&to=2025-12-16
 - [x] Allow combining multiple filters.
 - [x] Provide real-time log ingestion and searching capabilities.
 - [ ] Implement role-based access to the query interface.
+- [ ] Batching entries to reduce number of db insertion calls
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
