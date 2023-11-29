@@ -8,6 +8,7 @@ const LogSchema: Schema = new Schema({
   traceId: String,
   spanId: String,
   commit: String,
+  appId: String,
   metaData: {
     parentResourceId: String,
   },

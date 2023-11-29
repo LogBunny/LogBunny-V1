@@ -7,6 +7,7 @@ const LogData = z.object({
   traceId: z.string().min(1),
   spanId: z.string().min(1),
   commit: z.string().min(1),
+  appId: z.string().min(1),
   metaData: z.object({
     parentResourceId: z.string().min(1),
   }),
